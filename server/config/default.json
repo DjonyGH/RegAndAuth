@@ -1,4 +1,4 @@
 {
   "serverPort": 5000,
-  "dbUrl": "mongodb://localhost:27017/admin"
+  "dbUrl": "mongodb://localhost:27017/regandauth"
 }
