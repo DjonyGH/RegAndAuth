@@ -25,12 +25,24 @@ router.post('/registration',
             const candidateEmail = await User.findOne({email});
 
             if (candidateLogin) {
-                return res.status(400).json({message: `User with login ${login} already exist`});
-            }
-
-            if (candidateEmail) {
-                return res.status(400).json({message: `User with login ${email} already exist`});
-            }
+                if (candidateEmail) {
+                    return res.status(400).json({
+                        message: `User with login ${login} and ${email} already exist`,
+                        codeError: 'loginAndEmailExist'
+                    });
+                }
+                return res.status(400).json({
+                    message: `User with login ${login} already exist`,
+                    codeError: 'loginExist'
+                });
+            } else {
+                if (candidateEmail) {
+                    return res.status(400).json({
+                        message: `User with email ${email} already exist`,
+                        codeError: 'emailExist'
+                    });
+                } 
+            }            
 
             const hashPass = await bcrypt.hash(pass, 15);
             
@@ -44,5 +56,41 @@ router.post('/registration',
         }
     }
 );
+
+router.get('/check-login', async (req, res) => {
+    const login = await req.query.login;
+
+    const candidateLogin = await User.findOne({login});
+
+    if (candidateLogin) {
+        return res.status(400).json({
+            message: `User with login ${login} already exist`,
+            code: 'loginExist'
+        });
+    } else {
+        return res.status(200).json({
+            message: `${login} free`,
+            code: 'loginFree'
+        });
+    }
+});
+
+router.get('/check-email', async (req, res) => {
+    const email = await req.query.email;
+
+    const candidateEmail = await User.findOne({email});
+
+    if (candidateEmail) {
+        return res.status(400).json({
+            message: `User with email ${email} already exist`,
+            code: 'emailExist'
+        });
+    } else {
+        return res.status(200).json({
+            message: `${email} free`,
+            code: 'emailFree'
+        });
+    }
+});
 
 module.exports = router;

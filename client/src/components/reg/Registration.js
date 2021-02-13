@@ -7,12 +7,15 @@ function Registration() {
   const [loginErrorUnique, setLoginErrorUnique] = useState(false);
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
-  const [emailErrorUnique, setEmailErrorInique] = useState(false);
+  const [emailErrorUnique, setEmailErrorUnique] = useState(false);
   const [pass, setPass] = useState('');
   const [passError, setPassError] = useState(false);
+  const [passConfirm, setPassConfirm] = useState('');
   const [passConfirmError, setPassConfirmError] = useState(false);
 
-  const validateLogin = (ev) => {
+  const baseUrl = 'http://localhost:5000/api/auth';
+
+  const validateLogin = async (ev) => {
     const maskLogin = /^[a-zA-Z][a-zA-Z\.]{2,20}$/;
     const isValidLogin = maskLogin.test(String(ev.target.value));
     if (!isValidLogin) {
@@ -20,12 +23,19 @@ function Registration() {
       setLogin('');
     } else {
       // код для проверки уникальности Login в БД
-      setLoginError(false);
-      setLogin(ev.target.value);
+      const res = await fetch(`${baseUrl}/check-login?login=${ev.target.value}`);
+      const data = await res.json();
+      if (data.code === 'loginExist') {
+        setLoginError(true);
+        setLoginErrorUnique(true);
+      }
+      if (data.code === 'loginFree') {
+        setLogin(ev.target.value);
+      }      
     }                  
   }
 
-  const validateEmail = (ev) => {
+  const validateEmail = async (ev) => {
     const maskEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
     const isValidEmail = maskEmail.test(String(ev.target.value).toLowerCase());
     if (!isValidEmail) {
@@ -33,8 +43,15 @@ function Registration() {
       setEmail('');
     } else {
       // код для проверки уникальности email в БД
-      setEmailError(false);
-      setEmail(ev.target.value);
+      const res = await fetch(`${baseUrl}/check-email?email=${ev.target.value}`);
+      const data = await res.json();
+      if (data.code === 'emailExist') {
+        setEmailError(true);
+        setEmailErrorUnique(true);
+      }
+      if (data.code === 'emailFree') {
+        setEmail(ev.target.value);
+      }
     }         
   }
 
@@ -50,27 +67,65 @@ function Registration() {
       setPassConfirmError(true)
     } else {
       setPassConfirmError(false)
+      setPassConfirm(ev.target.value)
     }
   }
 
   const clearErrorLogin = (ev) => {
-    setLoginError(false);       
+    setLoginError(false);  
+    setLoginErrorUnique(false);     
   }
 
   const clearErrorEmail = (ev) => {
-    setEmailError(false);       
+    setEmailError(false);
+    setEmailErrorUnique(false);       
   }
 
-  const createUser = () => {
-    if (login && email && pass) {
-      console.log('Логин: ', login);
-      console.log('Email: ', email);
-      console.log('Пароль: ', pass);
-    } else {
+  const createUser = async () => {
+    if (!login || !email || !pass) {
       !login ? setLoginError(true) : setLoginError(false);
       !email ? setEmailError(true) : setEmailError(false);
       !pass ? setPassError(true) : setPassError(false);
-      console.log('Заполните поля!');
+    } else if(passConfirm !== pass) {
+      setPassConfirmError(true)
+    } else {      
+      console.log('Логин: ', login);
+      console.log('Email: ', email);
+      console.log('Пароль: ', pass);
+
+      const user = {
+        "login": login,
+        "email": email,
+        "pass": pass
+      }
+      
+
+      const res = await fetch(`${baseUrl}/registration`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+      });
+      
+      if (await res.status !== 200) {
+        const error = await res.json();
+        console.log(error);
+        if (error.codeError === 'loginExist') {
+          setLoginError(true);
+          setLoginErrorUnique(true);
+        } 
+        if (error.codeError === 'emailExist') {
+          setEmailError(true);
+          setEmailErrorUnique(true);
+        }
+        if (error.codeError === 'loginAndEmailExist') {
+          setLoginError(true);
+          setLoginErrorUnique(true);
+          setEmailError(true);
+          setEmailErrorUnique(true);
+        }
+      }
     }     
   }
 
