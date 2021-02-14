@@ -12,6 +12,7 @@ function Registration() {
   const [passError, setPassError] = useState(false);
   const [passConfirm, setPassConfirm] = useState('');
   const [passConfirmError, setPassConfirmError] = useState(false);
+  const [regSuccess, setRegSuccess] = useState(false);
 
   const baseUrl = 'http://localhost:5000/api/auth';
 
@@ -125,6 +126,8 @@ function Registration() {
           setEmailError(true);
           setEmailErrorUnique(true);
         }
+      } else {
+        setRegSuccess(true);
       }
     }     
   }
@@ -233,6 +236,11 @@ function Registration() {
         <button className={[styles.cancelBtn, styles.btn].join(' ')}>
           Отмена
         </button>
+      </div>
+
+      <div className={regSuccess ? styles.successPopup : [styles.successPopup, styles.successPopupHide].join(' ')}>
+        <h2 className={styles.title}>Вы успешно зарегистрировались</h2>
+        <button className={styles.successBtn}>Ок</button>
       </div>
       
     </div>

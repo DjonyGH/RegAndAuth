@@ -10,6 +10,7 @@
   align-items: center;
   justify-content: flex-start;
   padding: 20px 70px 30px;
+  position: relative;
 }
 .title {
   margin: 0 0 20px;
@@ -83,6 +84,49 @@
   border: 1px solid #FA7167;
 }
 .cancelBtn:active {
+  background-color: white;
+  color: black;
+}
+
+.successPopup {
+  width: 400px;
+  height: 150px;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid rgb(31, 155, 31);
+  box-shadow: 0 0 10px rgba(31, 155, 31, 0.658);
+  position: absolute;
+  left: calc(50% - 200px);
+  top: calc(50% - 75px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.successPopupHide {
+  display: none;
+}
+
+h2.title {
+  font-size: 18px;
+}
+
+.successBtn {
+  width: 80px;
+  height: 40px;
+  border-radius: 10px;  
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 700;
+  padding: 0 10px;
+  outline: none;
+  background-color: rgb(31, 155, 31);
+  color: white;
+  border: 1px solid rgb(31, 155, 31);
+}
+
+.successBtn:active {
   background-color: white;
   color: black;
 }
