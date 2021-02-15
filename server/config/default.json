@@ -1,4 +1,6 @@
 {
   "serverPort": 5000,
-  "dbUrl": "mongodb://localhost:27017/regandauth"
+  "dbUrl": "mongodb://localhost:27017/regandauth",
+  "secretKey": "auth-secret-key"
+
 }
