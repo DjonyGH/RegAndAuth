@@ -144,11 +144,12 @@ router.get('/auth', authMiddleware,
                     id: user.id,
                     login: user.login,
                     email: user.email
-                }
+                },
+                message: 'Success authorization'
             })
         } catch (e) {
             console.log(e);
-            res.send({message: "Server error"});
+            res.send({message: "Server error!"});
         }
     }
 );

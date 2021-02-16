@@ -128,6 +128,9 @@ function Registration() {
         }
       } else {
         setRegSuccess(true);
+        const data = await res.json();
+        console.log(data);
+        localStorage.setItem('token', data.token)
       }
     }     
   }
@@ -153,6 +156,9 @@ function Registration() {
   }
   const handleClickReg = () => {
     createUser()
+  }
+  const handleClickOk = () => {
+    window.location.reload();
   }
 
   return (
@@ -240,7 +246,10 @@ function Registration() {
 
       <div className={regSuccess ? styles.successPopup : [styles.successPopup, styles.successPopupHide].join(' ')}>
         <h2 className={styles.title}>Вы успешно зарегистрировались</h2>
-        <button className={styles.successBtn}>Ок</button>
+        <button 
+          className={styles.successBtn}
+          onClick={() => handleClickOk()}
+        >Ок</button>
       </div>
       
     </div>
